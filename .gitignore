@@ -1,0 +1,10 @@
+# System
+.DS_Store
+Thumbs.db
+
+# Sensitive config — copy db.example.php → db.php and fill in credentials
+config/db.php
+
+# Dev-only tools
+docs/generate_seed.php
+router.php

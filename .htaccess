@@ -1,0 +1,12 @@
+Options -Indexes
+RewriteEngine On
+
+# Let real files and directories through
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Homepage
+RewriteRule ^$ index.php [L]
+
+# Post slugs → post.php
+RewriteRule ^([a-z0-9\-]+)/?$ post.php?slug=$1 [L,QSA]
