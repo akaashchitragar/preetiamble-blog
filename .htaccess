@@ -8,5 +8,8 @@ RewriteCond %{REQUEST_FILENAME} !-d
 # Homepage
 RewriteRule ^$ index.php [L]
 
+# Sitemap
+RewriteRule ^sitemap\.xml$ sitemap.php [L]
+
 # Post slugs → post.php
 RewriteRule ^([a-z0-9\-]+)/?$ post.php?slug=$1 [L,QSA]

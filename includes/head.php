@@ -3,7 +3,90 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Preeti Amble — Stories from a life lived slowly</title>
+<link rel="icon" type="image/x-icon" href="/assets/favicon.ico"/>
+<title><?= htmlspecialchars($seoTitle ?? 'Preeti Amble — Personal Essays on Life & Mindfulness') ?></title>
+<meta name="description" content="<?= htmlspecialchars($seoDescription ?? 'Real, honest essays on mindfulness, self-growth, relationships, and the art of living slowly. Written by Preeti Amble. New stories every week.') ?>"/>
+
+<!-- Robots & indexing -->
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"/>
+<meta name="googlebot" content="index, follow"/>
+
+<!-- AI crawlers — allow all -->
+<meta name="GPTBot" content="index, follow"/>
+<meta name="ChatGPT-User" content="index, follow"/>
+<meta name="anthropic-ai" content="index, follow"/>
+<meta name="ClaudeBot" content="index, follow"/>
+<meta name="CCBot" content="index, follow"/>
+<meta name="PerplexityBot" content="index, follow"/>
+<meta name="cohere-ai" content="index, follow"/>
+
+<!-- Keywords -->
+<meta name="keywords" content="<?= htmlspecialchars($seoKeywords ?? 'personal essays, mindfulness, self growth, slow living, life stories, Preeti Amble, relationships, mental wellness') ?>"/>
+
+<!-- Author & language -->
+<meta name="author" content="Preeti Amble"/>
+<meta name="language" content="en"/>
+<meta http-equiv="content-language" content="en"/>
+
+<!-- Open Graph -->
+<meta property="og:type"        content="<?= isset($post) ? 'article' : 'website' ?>"/>
+<meta property="og:site_name"   content="Preeti Amble"/>
+<meta property="og:title"       content="<?= htmlspecialchars($seoTitle ?? 'Preeti Amble — Personal Essays on Life & Mindfulness') ?>"/>
+<meta property="og:description" content="<?= htmlspecialchars($seoDescription ?? 'Real, honest essays on mindfulness, self-growth, relationships, and the art of living slowly. Written by Preeti Amble. New stories every week.') ?>"/>
+<meta property="og:url"         content="https://preetiamble.blog<?= htmlspecialchars($_SERVER['REQUEST_URI'] ?? '/') ?>"/>
+<?php if (!empty($seoImage)): ?>
+<meta property="og:image"       content="<?= htmlspecialchars($seoImage) ?>"/>
+<meta property="og:image:width"  content="1200"/>
+<meta property="og:image:height" content="630"/>
+<?php endif; ?>
+
+<!-- Twitter Card -->
+<meta name="twitter:card"        content="summary_large_image"/>
+<meta name="twitter:title"       content="<?= htmlspecialchars($seoTitle ?? 'Preeti Amble — Personal Essays on Life & Mindfulness') ?>"/>
+<meta name="twitter:description" content="<?= htmlspecialchars($seoDescription ?? 'Real, honest essays on mindfulness, self-growth, relationships, and the art of living slowly. Written by Preeti Amble. New stories every week.') ?>"/>
+<?php if (!empty($seoImage)): ?>
+<meta name="twitter:image"       content="<?= htmlspecialchars($seoImage) ?>"/>
+<?php endif; ?>
+
+<!-- Canonical -->
+<link rel="canonical" href="https://preetiamble.blog<?= htmlspecialchars(strtok($_SERVER['REQUEST_URI'] ?? '/', '?')) ?>"/>
+
+<?php if (isset($post) && !empty($post['id'])): ?>
+<!-- Article OG tags -->
+<meta property="article:published_time" content="<?= htmlspecialchars($seoArticleDate ?? '') ?>"/>
+<meta property="article:author"         content="Preeti Amble"/>
+<meta property="article:section"        content="<?= htmlspecialchars($post['category_name'] ?? '') ?>"/>
+
+<!-- JSON-LD Structured Data -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": <?= json_encode(mb_substr($post['title'], 0, 110)) ?>,
+    "description": <?= json_encode($seoDescription ?? '') ?>,
+    "datePublished": <?= json_encode($seoArticleDate ?? '') ?>,
+    "author": { "@type": "Person", "name": "Preeti Amble", "url": "https://preetiamble.blog" },
+    "publisher": { "@type": "Person", "name": "Preeti Amble", "url": "https://preetiamble.blog" },
+    "url": "https://preetiamble.blog/<?= htmlspecialchars($post['slug']) ?>",
+    "mainEntityOfPage": "https://preetiamble.blog/<?= htmlspecialchars($post['slug']) ?>"
+    <?php if (!empty($post['cover_image'])): ?>
+    ,"image": <?= json_encode($post['cover_image']) ?>
+    <?php endif; ?>
+}
+</script>
+<?php else: ?>
+<!-- JSON-LD for homepage -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "name": "Preeti Amble",
+    "description": "Real, honest essays on mindfulness, self-growth, relationships, and the art of living slowly.",
+    "url": "https://preetiamble.blog",
+    "author": { "@type": "Person", "name": "Preeti Amble" }
+}
+</script>
+<?php endif; ?>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=Noto+Serif:ital,wght@0,100..900;1,100..900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
@@ -96,5 +179,39 @@
         box-shadow: 0 12px 40px rgba(44, 30, 15, 0.10);
     }
 </style>
+<!-- Google Analytics 4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-MXQNVLW07T"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-MXQNVLW07T', {
+    send_page_view: true,
+    cookie_flags: 'SameSite=None;Secure'
+});
+
+// ── Scroll depth tracking ────────────────────────────────────
+(function() {
+    const marks = [25, 50, 75, 90];
+    const fired = new Set();
+    window.addEventListener('scroll', function() {
+        const pct = Math.round((window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100);
+        marks.forEach(m => {
+            if (pct >= m && !fired.has(m)) {
+                fired.add(m);
+                gtag('event', 'scroll_depth', { depth_percentage: m });
+            }
+        });
+    }, { passive: true });
+})();
+
+// ── Outbound link tracking ───────────────────────────────────
+document.addEventListener('click', function(e) {
+    const a = e.target.closest('a');
+    if (a && a.hostname && a.hostname !== location.hostname) {
+        gtag('event', 'outbound_click', { url: a.href, text: a.innerText?.trim().substring(0, 100) });
+    }
+});
+</script>
 </head>
 <body class="bg-background text-on-background">

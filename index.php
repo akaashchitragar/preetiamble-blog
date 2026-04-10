@@ -1,5 +1,10 @@
 <?php
 require_once __DIR__ . '/config/db.php';
+
+$seoTitle       = 'Preeti Amble — Personal Essays on Life & Mindfulness';
+$seoDescription = 'Real, honest essays on mindfulness, self-growth, relationships, and the art of living slowly. Written by Preeti Amble. New stories every week.';
+$seoImage       = 'https://preetiamble.blog/assets/opengraph.png';
+
 require_once __DIR__ . '/includes/head.php';
 ?>
 

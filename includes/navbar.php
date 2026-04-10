@@ -1,5 +1,5 @@
-<nav class="bg-[#fff9ee]/95 backdrop-blur-md top-0 sticky z-50 w-full" x-data="{ open: false }">
-    <div class="flex justify-between items-center w-full px-5 md:px-8 py-4 max-w-7xl mx-auto border-b border-[#DDD0BC]">
+<nav id="main-nav" class="bg-[#fff9ee]/95 backdrop-blur-md top-0 sticky z-50 w-full transition-all duration-300" x-data="{ open: false }">
+    <div id="nav-inner" class="flex justify-between items-center w-full px-5 md:px-8 py-4 max-w-7xl mx-auto border-b border-[#DDD0BC] transition-all duration-300">
 
         <a class="font-headline italic text-xl md:text-2xl text-[#2C1E0F]" href="/">Preeti Amble</a>
 
@@ -34,3 +34,24 @@
 </nav>
 
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+<script>
+(function() {
+    const nav   = document.getElementById('main-nav');
+    const inner = document.getElementById('nav-inner');
+    const logo  = nav.querySelector('a.font-headline');
+
+    window.addEventListener('scroll', function() {
+        if (window.scrollY > 40) {
+            inner.style.paddingTop    = '10px';
+            inner.style.paddingBottom = '10px';
+            nav.style.boxShadow       = '0 2px 16px rgba(44,30,15,0.07)';
+            if (logo) { logo.style.fontSize = '1.15rem'; }
+        } else {
+            inner.style.paddingTop    = '';
+            inner.style.paddingBottom = '';
+            nav.style.boxShadow       = '';
+            if (logo) { logo.style.fontSize = ''; }
+        }
+    }, { passive: true });
+})();
+</script>

@@ -50,6 +50,26 @@ $recommendations = $recStmt->fetchAll();
 $date     = date('F j, Y', strtotime($post['published_at']));
 $readTime = (int)$post['reading_time'];
 
+// ── SEO meta ─────────────────────────────────────────────────
+// Title: "Post Title — Preeti Amble", truncated to 60 chars
+$rawTitle   = $post['title'] . ' — Preeti Amble';
+$seoTitle   = mb_strlen($rawTitle) <= 60 ? $rawTitle : mb_substr($post['title'], 0, 57 - mb_strlen(' — Preeti Amble') + mb_strlen(' — Preeti Amble')) . '… — Preeti Amble';
+if (mb_strlen($seoTitle) > 60) $seoTitle = mb_substr($post['title'], 0, 45) . '… — Preeti Amble';
+
+// Description: use excerpt, trim to 160 chars
+$rawDesc        = strip_tags($post['excerpt'] ?? '');
+$seoDescription = mb_strlen($rawDesc) <= 160 ? $rawDesc : mb_substr($rawDesc, 0, 157) . '…';
+
+// Image for OG/Twitter
+$seoImage = !empty($post['cover_image']) ? $post['cover_image'] : 'https://preetiamble.blog/assets/opengraph.png';
+
+// Keywords: category + generic blog keywords
+$seoKeywords = htmlspecialchars($post['category_name']) . ', personal essays, mindfulness, slow living, Preeti Amble, self growth, life stories';
+
+// Article-specific structured data
+$seoArticleDate    = date('c', strtotime($post['published_at']));
+$seoArticleAuthor  = 'Preeti Amble';
+
 /**
  * Renders block-editor JSON into clean HTML.
  */
@@ -226,6 +246,54 @@ require_once __DIR__ . '/includes/head.php';
 </main>
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>
+
+<?php if ($post): ?>
+<script>
+// ── Post-specific GA4 events ─────────────────────────────────
+const POST_TITLE    = <?= json_encode($post['title']) ?>;
+const POST_CATEGORY = <?= json_encode($post['category_name']) ?>;
+const POST_SLUG     = <?= json_encode($post['slug']) ?>;
+const READ_TIME     = <?= (int)($post['reading_time'] ?? 5) ?>;
+
+// Post view (richer than default page_view)
+gtag('event', 'post_view', {
+    post_title:    POST_TITLE,
+    post_category: POST_CATEGORY,
+    post_slug:     POST_SLUG,
+    read_time_min: READ_TIME
+});
+
+// Time-on-page milestones (1min, 3min, read_time)
+[60, 180, READ_TIME * 60].filter((v, i, a) => a.indexOf(v) === i && v > 0).forEach(sec => {
+    setTimeout(() => {
+        gtag('event', 'time_on_post', {
+            seconds:       sec,
+            post_title:    POST_TITLE,
+            post_category: POST_CATEGORY
+        });
+    }, sec * 1000);
+});
+
+// Post read completion — fires when user reaches the bottom of the article
+(function() {
+    const article = document.querySelector('article') || document.querySelector('main');
+    if (!article) return;
+    const observer = new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting) {
+            gtag('event', 'post_read_complete', {
+                post_title:    POST_TITLE,
+                post_category: POST_CATEGORY,
+                post_slug:     POST_SLUG
+            });
+            observer.disconnect();
+        }
+    }, { threshold: 0.9 });
+    // Observe the recommendations section as "end of post"
+    const endMarker = document.querySelector('[data-end-marker]') || article.lastElementChild;
+    if (endMarker) observer.observe(endMarker);
+})();
+</script>
+<?php endif; ?>
 
 </body>
 </html>
